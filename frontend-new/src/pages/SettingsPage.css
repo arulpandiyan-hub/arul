@@ -1,0 +1,644 @@
+/* =========================================================
+   SETTINGS PAGE
+========================================================= */
+
+.settings-page {
+  width: 100%;
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 42px 48px 80px;
+  box-sizing: border-box;
+  color: #f8fafc;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.settings-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.settings-header h1 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.settings-header p {
+  margin: 12px 0 0;
+  color: #94a3b8;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.settings-icon {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #304365;
+  border-radius: 15px;
+
+  color: #60a5fa;
+  background: #121e34;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+
+/* =========================================================
+   CONNECTION STATUS
+========================================================= */
+
+.settings-connection {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  margin-bottom: 24px;
+  padding: 18px 20px;
+
+  border: 1px solid #29405f;
+  border-radius: 16px;
+
+  background: #111b2e;
+}
+
+.settings-connection-icon {
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.settings-connection-content {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-connection-content strong {
+  color: #f8fafc;
+  font-size: 15px;
+}
+
+.settings-connection-content span {
+  color: #71809d;
+  font-size: 12px;
+}
+
+.settings-online {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #4ade80;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.settings-online span {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+  background: #4ade80;
+
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.8);
+}
+
+
+/* =========================================================
+   SETTINGS SECTION
+========================================================= */
+
+.settings-section {
+  margin-top: 24px;
+
+  border: 1px solid #243450;
+  border-radius: 18px;
+
+  background: #0f1728;
+
+  overflow: hidden;
+}
+
+.settings-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 20px 22px;
+
+  border-bottom: 1px solid #202d45;
+}
+
+.settings-section-heading > div span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #64748b;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.settings-section-heading h2 {
+  margin: 0;
+
+  color: #f8fafc;
+
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.settings-section-heading > svg {
+  color: #64748b;
+}
+
+
+/* =========================================================
+   THEME OPTIONS
+========================================================= */
+
+.theme-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+
+  padding: 20px;
+}
+
+.theme-option {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  min-height: 80px;
+  padding: 16px;
+
+  border: 1px solid #263754;
+  border-radius: 14px;
+
+  color: #94a3b8;
+  background: #121c30;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.theme-option:hover {
+  border-color: #3b5277;
+  background: #17233a;
+  transform: translateY(-1px);
+}
+
+.theme-option.selected {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.theme-option > svg:first-child {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+
+  color: #60a5fa;
+}
+
+.theme-option div {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.theme-option strong {
+  color: #f8fafc;
+  font-size: 14px;
+}
+
+.theme-option span {
+  color: #71809d;
+  font-size: 11px;
+}
+
+.theme-option > svg:last-child {
+  color: #3b82f6;
+}
+
+
+/* =========================================================
+   SETTINGS LIST
+========================================================= */
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 18px 22px;
+
+  border-bottom: 1px solid #202d45;
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row.clickable {
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    padding-left 0.2s ease;
+}
+
+.settings-row.clickable:hover {
+  background: #131f34;
+  padding-left: 26px;
+}
+
+
+/* =========================================================
+   ROW ICONS
+========================================================= */
+
+.settings-row-icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+}
+
+.settings-row-icon.blue {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.settings-row-icon.purple {
+  color: #a78bfa;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.settings-row-icon.violet {
+  color: #c084fc;
+  background: rgba(168, 85, 247, 0.1);
+}
+
+.settings-row-icon.green {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+
+/* =========================================================
+   ROW CONTENT
+========================================================= */
+
+.settings-row-content {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-row-content strong {
+  color: #e2e8f0;
+  font-size: 14px;
+}
+
+.settings-row-content span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   CHEVRON
+========================================================= */
+
+.settings-row > svg {
+  flex-shrink: 0;
+  color: #64748b;
+}
+
+
+/* =========================================================
+   TOGGLE
+========================================================= */
+
+.settings-toggle {
+  position: relative;
+
+  width: 46px;
+  height: 25px;
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 1px solid #34445f;
+  border-radius: 20px;
+
+  background: #1a263c;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.settings-toggle span {
+  position: absolute;
+
+  width: 17px;
+  height: 17px;
+
+  top: 3px;
+  left: 3px;
+
+  border-radius: 50%;
+
+  background: #94a3b8;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.settings-toggle.on {
+  border-color: #3b82f6;
+  background: #2563eb;
+}
+
+.settings-toggle.on span {
+  background: #ffffff;
+  transform: translateX(20px);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.settings-footer {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  margin-top: 28px;
+  padding: 18px 20px;
+
+  border: 1px solid #243450;
+  border-radius: 15px;
+
+  background: #10192b;
+}
+
+.settings-footer-logo {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.settings-footer > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-footer strong {
+  color: #e2e8f0;
+  font-size: 14px;
+}
+
+.settings-footer span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 800px) {
+
+  .settings-page {
+    padding: 32px 28px 60px;
+  }
+
+  .theme-options {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .settings-page {
+    padding: 25px 16px 50px;
+  }
+
+  .settings-header {
+    align-items: flex-start;
+  }
+
+  .settings-header h1 {
+    font-size: 34px;
+  }
+
+  .settings-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .settings-connection {
+    align-items: flex-start;
+  }
+
+  .settings-online {
+    margin-left: auto;
+  }
+
+  .settings-row {
+    padding: 16px;
+  }
+
+  .settings-section-heading {
+    padding: 18px;
+  }
+
+}
+/* =====================================================
+   GLOBAL THEME
+===================================================== */
+
+body {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+
+body.dark-mode {
+  background: #0b0f19;
+  color: #f5f7fb;
+}
+
+
+/* =====================================================
+   LIGHT MODE
+===================================================== */
+
+body.light-mode {
+  background: #f5f7fb;
+  color: #111827;
+}
+
+
+/* =====================================================
+   SETTINGS LIGHT MODE
+===================================================== */
+
+body.light-mode .settings-page {
+  color: #111827;
+}
+
+
+body.light-mode .settings-page .settings-section,
+body.light-mode .settings-page .settings-connection,
+body.light-mode .settings-page .settings-row,
+body.light-mode .settings-page .theme-option,
+body.light-mode .settings-page .settings-footer {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+
+
+body.light-mode .settings-page h1,
+body.light-mode .settings-page h2,
+body.light-mode .settings-page strong {
+  color: #111827;
+}
+
+
+body.light-mode .settings-page p,
+body.light-mode .settings-page span {
+  color: #6b7280;
+}
+
+
+/* =====================================================
+   LIGHT MODE THEME OPTIONS
+===================================================== */
+
+body.light-mode .theme-option {
+  color: #111827;
+}
+
+
+body.light-mode .theme-option:hover {
+  background: #f8fafc;
+}
+
+
+body.light-mode .theme-option.selected {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+
+/* =====================================================
+   DARK MODE THEME OPTIONS
+===================================================== */
+
+body.dark-mode .theme-option {
+  color: #f5f7fb;
+}
+
+
+body.dark-mode .theme-option.selected {
+  background: rgba(59, 130, 246, 0.12);
+}
+
+
+/* =====================================================
+   SMOOTH THEME TRANSITION
+===================================================== */
+
+body,
+.settings-page,
+.settings-section,
+.settings-connection,
+.settings-row,
+.theme-option,
+.settings-footer {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}

@@ -13,7 +13,7 @@ import {
   Trash2,
   Clock3,
 } from "lucide-react";
-
+import "./Notifications.css";
 function Notifications() {
 
   const [notifications, setNotifications] = useState([

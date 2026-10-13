@@ -1,313 +1,201 @@
-import { useState } from "react";
+{/* -----------------------------------------
+    QUICK ACTIONS
+----------------------------------------- */}
 
-import {
-  Lightbulb,
-  Power,
-  Zap,
-  Fan,
-  Home,
-  CheckCircle2,
-} from "lucide-react";
+<section className="quick-actions-section">
 
-function QuickActions() {
-  const [lightsOn, setLightsOn] = useState(false);
-  const [everythingOff, setEverythingOff] = useState(false);
+  <div className="quick-actions-header">
 
-  const handleAllLights = () => {
-    setLightsOn(!lightsOn);
-    setEverythingOff(false);
-  };
+    <div className="quick-actions-title">
 
-  const handleEverythingOff = () => {
-    setEverythingOff(true);
-    setLightsOn(false);
-  };
-
-  return (
-    <div className="quick-page">
-
-      {/* HEADER */}
-
-      <div className="quick-header">
-
-        <div>
-          <div className="section-label">
-            SMART CONTROL
-          </div>
-
-          <h1>Quick Actions</h1>
-
-          <p>
-            Control multiple devices with one tap.
-          </p>
-        </div>
-
-        <div className="quick-status">
-          <CheckCircle2 size={18} />
-          <span>READY</span>
-        </div>
-
+      <div className="quick-actions-title-icon">
+        <Zap size={18} />
       </div>
 
-
-      {/* MAIN ACTIONS */}
-
-      <div className="quick-action-grid">
-
-        {/* ALL LIGHTS */}
-
-        <button
-          className={
-            lightsOn
-              ? "quick-action-card lights selected"
-              : "quick-action-card lights"
-          }
-          onClick={handleAllLights}
-        >
-
-          <div className="quick-card-top">
-
-            <div className="quick-icon">
-              <Lightbulb size={32} />
-            </div>
-
-            <div className="quick-card-check">
-              {lightsOn ? "ACTIVE" : "READY"}
-            </div>
-
-          </div>
-
-          <div className="quick-card-content">
-
-            <h2>
-              All Lights
-            </h2>
-
-            <p>
-              Turn every connected light
-              {lightsOn ? " ON" : " ON"}.
-            </p>
-
-          </div>
-
-          <div className="quick-action-button">
-
-            <Power size={17} />
-
-            {lightsOn
-              ? "Lights are ON"
-              : "Turn All Lights ON"}
-
-          </div>
-
-        </button>
-
-
-        {/* ALL LIGHTS OFF */}
-
-        <button
-          className="quick-action-card lights-off"
-          onClick={() => {
-            setLightsOn(false);
-            setEverythingOff(false);
-          }}
-        >
-
-          <div className="quick-card-top">
-
-            <div className="quick-icon">
-              <Lightbulb size={32} />
-            </div>
-
-            <div className="quick-card-check">
-              READY
-            </div>
-
-          </div>
-
-          <div className="quick-card-content">
-
-            <h2>
-              All Lights OFF
-            </h2>
-
-            <p>
-              Switch every connected light off.
-            </p>
-
-          </div>
-
-          <div className="quick-action-button red">
-
-            <Power size={17} />
-
-            Turn All Lights OFF
-
-          </div>
-
-        </button>
-
-
-        {/* EVERYTHING OFF */}
-
-        <button
-          className={
-            everythingOff
-              ? "quick-action-card everything selected"
-              : "quick-action-card everything"
-          }
-          onClick={handleEverythingOff}
-        >
-
-          <div className="quick-card-top">
-
-            <div className="quick-icon">
-              <Home size={32} />
-            </div>
-
-            <div className="quick-card-check">
-              {everythingOff ? "ACTIVE" : "READY"}
-            </div>
-
-          </div>
-
-          <div className="quick-card-content">
-
-            <h2>
-              Everything OFF
-            </h2>
-
-            <p>
-              Turn off all connected devices.
-            </p>
-
-          </div>
-
-          <div className="quick-action-button red">
-
-            <Power size={17} />
-
-            {everythingOff
-              ? "Everything is OFF"
-              : "Turn Everything OFF"}
-
-          </div>
-
-        </button>
-
-
-        {/* FAN */}
-
-        <button
-          className="quick-action-card fan-action"
-        >
-
-          <div className="quick-card-top">
-
-            <div className="quick-icon">
-              <Fan size={32} />
-            </div>
-
-            <div className="quick-card-check">
-              READY
-            </div>
-
-          </div>
-
-          <div className="quick-card-content">
-
-            <h2>
-              Fan Control
-            </h2>
-
-            <p>
-              Quickly access your smart fan.
-            </p>
-
-          </div>
-
-          <div className="quick-action-button blue">
-
-            <Zap size={17} />
-
-            Open Fan Control
-
-          </div>
-
-        </button>
-
-      </div>
-
-
-      {/* ACTIVITY */}
-
-      <div className="quick-activity">
-
-        <div className="quick-activity-header">
-
-          <div>
-            <div className="section-label">
-              AUTOMATION STATUS
-            </div>
-
-            <h2>
-              Quick Control
-            </h2>
-          </div>
-
-          <span className="activity-online">
-            <span></span>
-            SYSTEM ONLINE
-          </span>
-
-        </div>
-
-
-        <div className="quick-info-grid">
-
-          <div className="quick-info-card">
-
-            <Lightbulb size={19} />
-
-            <div>
-              <span>LIGHTS</span>
-              <strong>
-                {lightsOn ? "ON" : "OFF"}
-              </strong>
-            </div>
-
-          </div>
-
-
-          <div className="quick-info-card">
-
-            <Fan size={19} />
-
-            <div>
-              <span>FAN</span>
-              <strong>READY</strong>
-            </div>
-
-          </div>
-
-
-          <div className="quick-info-card">
-
-            <Zap size={19} />
-
-            <div>
-              <span>ESP32</span>
-              <strong>CONNECTED</strong>
-            </div>
-
-          </div>
-
-        </div>
-
+      <div>
+        <h2>Quick Actions</h2>
+        <p>Control your home instantly</p>
       </div>
 
     </div>
-  );
-}
 
-export default QuickActions;
+    <div className="quick-actions-status">
+      <span className="quick-status-dot"></span>
+      Ready
+    </div>
+
+  </div>
+
+
+  <div className="quick-actions-grid">
+
+    {/* LIGHT ON */}
+
+    <button
+      className="quick-action-card light-action"
+      onClick={allLightsOn}
+      disabled={loading || lightOn}
+    >
+
+      <div className="quick-action-left">
+
+        <div className="quick-action-icon">
+          <Lightbulb size={21} />
+        </div>
+
+        <div className="quick-action-info">
+          <strong>Light ON</strong>
+
+          <span>
+            {lightOn
+              ? "Already running"
+              : "Turn on the light"}
+          </span>
+        </div>
+
+      </div>
+
+      <div className="quick-action-arrow">
+        <ArrowRight size={17} />
+      </div>
+
+    </button>
+
+
+    {/* LIGHT OFF */}
+
+    <button
+      className="quick-action-card light-off-action"
+      onClick={allLightsOff}
+      disabled={loading || !lightOn}
+    >
+
+      <div className="quick-action-left">
+
+        <div className="quick-action-icon">
+          <Lightbulb size={21} />
+        </div>
+
+        <div className="quick-action-info">
+          <strong>Light OFF</strong>
+
+          <span>
+            {!lightOn
+              ? "Already off"
+              : "Turn off the light"}
+          </span>
+        </div>
+
+      </div>
+
+      <div className="quick-action-arrow">
+        <ArrowRight size={17} />
+      </div>
+
+    </button>
+
+
+    {/* FAN ON */}
+
+    <button
+      className="quick-action-card fan-action"
+      onClick={() => controlDevice("fan", true)}
+      disabled={loading || fanOn}
+    >
+
+      <div className="quick-action-left">
+
+        <div className="quick-action-icon">
+          <Fan size={21} />
+        </div>
+
+        <div className="quick-action-info">
+          <strong>Fan ON</strong>
+
+          <span>
+            {fanOn
+              ? "Already running"
+              : "Turn on the fan"}
+          </span>
+        </div>
+
+      </div>
+
+      <div className="quick-action-arrow">
+        <ArrowRight size={17} />
+      </div>
+
+    </button>
+
+
+    {/* FAN OFF */}
+
+    <button
+      className="quick-action-card fan-off-action"
+      onClick={() => controlDevice("fan", false)}
+      disabled={loading || !fanOn}
+    >
+
+      <div className="quick-action-left">
+
+        <div className="quick-action-icon">
+          <Fan size={21} />
+        </div>
+
+        <div className="quick-action-info">
+          <strong>Fan OFF</strong>
+
+          <span>
+            {!fanOn
+              ? "Already off"
+              : "Turn off the fan"}
+          </span>
+        </div>
+
+      </div>
+
+      <div className="quick-action-arrow">
+        <ArrowRight size={17} />
+      </div>
+
+    </button>
+
+
+    {/* EVERYTHING OFF */}
+
+    <button
+      className="quick-action-card everything-off-action"
+      onClick={everythingOff}
+      disabled={
+        loading ||
+        (!lightOn && !fanOn)
+      }
+    >
+
+      <div className="quick-action-left">
+
+        <div className="quick-action-icon">
+          <Power size={21} />
+        </div>
+
+        <div className="quick-action-info">
+          <strong>Everything OFF</strong>
+
+          <span>
+            {!lightOn && !fanOn
+              ? "Everything is already off"
+              : "Turn off all devices"}
+          </span>
+        </div>
+
+      </div>
+
+      <div className="quick-action-arrow">
+        <ArrowRight size={17} />
+      </div>
+
+    </button>
+
+  </div>
+
+</section>

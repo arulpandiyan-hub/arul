@@ -1,0 +1,709 @@
+/* =========================================================
+   DEVICES PAGE
+========================================================= */
+
+.devices-page {
+  min-height: 100vh;
+  padding: 42px 56px 70px;
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(
+      circle at 85% 5%,
+      rgba(78, 104, 255, 0.12),
+      transparent 30%
+    ),
+    #080c17;
+
+  color: #f5f7ff;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.devices-header {
+  max-width: 1250px;
+  margin: 0 auto 28px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.section-label {
+  margin-bottom: 8px;
+
+  color: #8290ad;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+.devices-header h1 {
+  margin: 0;
+
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 800;
+
+  letter-spacing: -1.5px;
+}
+
+.devices-header p {
+  margin: 11px 0 0;
+
+  color: #929eb5;
+
+  font-size: 16px;
+}
+
+
+/* =========================================================
+   REFRESH BUTTON
+========================================================= */
+
+.refresh-devices {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  height: 44px;
+  padding: 0 17px;
+
+  border: 1px solid #303b56;
+  border-radius: 11px;
+
+  background: #151d2e;
+  color: #e7ecf7;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.refresh-devices:hover {
+  background: #202b43;
+  border-color: #536da8;
+
+  transform: translateY(-1px);
+}
+
+.refresh-devices:active {
+  transform: translateY(0);
+}
+
+.refresh-devices svg {
+  transition: transform 0.4s ease;
+}
+
+.refresh-devices:hover svg {
+  transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   CONNECTION STATUS
+========================================================= */
+
+.device-connection {
+  max-width: 1250px;
+  margin: 0 auto 24px;
+
+  min-height: 68px;
+  padding: 0 18px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  border: 1px solid #29344c;
+  border-radius: 15px;
+
+  background: #111827;
+
+  color: #8794ad;
+
+  transition: 0.25s ease;
+}
+
+.device-connection.connected {
+  border-color: rgba(60, 215, 137, 0.25);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(42, 184, 111, 0.08),
+      rgba(17, 24, 39, 1)
+    );
+}
+
+.device-connection > svg {
+  width: 20px;
+  height: 20px;
+  color: #7887a5;
+}
+
+.device-connection.connected > svg {
+  color: #48dc91;
+}
+
+.device-connection div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  min-width: 0;
+}
+
+.device-connection strong {
+  color: #edf2ff;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.device-connection span:not(.connection-status) {
+  color: #7e8ba5;
+
+  font-size: 12px;
+}
+
+.connection-status {
+  margin-left: auto;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: rgba(255, 88, 105, 0.08);
+  border: 1px solid rgba(255, 88, 105, 0.2);
+
+  color: #ff8f9e;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.device-connection.connected .connection-status {
+  background: rgba(54, 214, 132, 0.08);
+  border-color: rgba(54, 214, 132, 0.2);
+
+  color: #4bdd91;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.device-error {
+  max-width: 1250px;
+  margin: 0 auto 20px;
+
+  padding: 13px 16px;
+
+  box-sizing: border-box;
+
+  border: 1px solid rgba(255, 86, 105, 0.25);
+  border-radius: 12px;
+
+  background: rgba(255, 70, 90, 0.07);
+
+  color: #ff9ca9;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   DEVICES GRID
+========================================================= */
+
+.devices-grid {
+  max-width: 1250px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 22px;
+}
+
+
+/* =========================================================
+   DEVICE CARD
+========================================================= */
+
+.device-card {
+  position: relative;
+  overflow: hidden;
+
+  min-height: 330px;
+
+  padding: 25px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #27334c;
+  border-radius: 23px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #151e31 0%,
+      #101727 100%
+    );
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.22);
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.device-card::after {
+  content: "";
+
+  position: absolute;
+
+  right: -70px;
+  bottom: -85px;
+
+  width: 190px;
+  height: 190px;
+
+  border-radius: 50%;
+
+  background: rgba(76, 110, 245, 0.06);
+
+  pointer-events: none;
+}
+
+.device-card:hover {
+  transform: translateY(-3px);
+
+  border-color: #3b4965;
+
+  box-shadow:
+    0 24px 55px rgba(0, 0, 0, 0.30);
+}
+
+
+/* =========================================================
+   LIGHT ACTIVE
+========================================================= */
+
+.device-card.light-on {
+  border-color: rgba(255, 207, 76, 0.38);
+
+  box-shadow:
+    0 18px 50px rgba(255, 195, 55, 0.08);
+}
+
+.device-card.light-on::after {
+  background: rgba(255, 205, 70, 0.09);
+}
+
+
+/* =========================================================
+   FAN ACTIVE
+========================================================= */
+
+.device-card.fan-on {
+  border-color: rgba(76, 110, 245, 0.55);
+
+  box-shadow:
+    0 18px 50px rgba(76, 110, 245, 0.12);
+}
+
+.device-card.fan-on::after {
+  background: rgba(76, 110, 245, 0.12);
+}
+
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.device-card-top {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 27px;
+}
+
+
+/* =========================================================
+   DEVICE ICON
+========================================================= */
+
+.device-icon {
+  width: 66px;
+  height: 66px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  border-radius: 18px;
+
+  border: 1px solid #303c57;
+
+  background: #1b2539;
+
+  color: #8998b6;
+
+  transition: all 0.25s ease;
+}
+
+.device-icon.light {
+  color: #8c9bb8;
+}
+
+.device-icon.fan {
+  color: #8c9bb8;
+}
+
+
+/* LIGHT ICON ON */
+
+.device-card.light-on .device-icon.light {
+  color: #ffd866;
+
+  background: rgba(255, 208, 76, 0.10);
+
+  border-color: rgba(255, 208, 76, 0.30);
+
+  box-shadow:
+    0 0 25px rgba(255, 204, 75, 0.08);
+}
+
+
+/* FAN ICON ON */
+
+.device-card.fan-on .device-icon.fan {
+  color: #8da6ff;
+
+  background: rgba(76, 110, 245, 0.13);
+
+  border-color: rgba(76, 110, 245, 0.35);
+}
+
+.device-card.fan-on .device-icon.fan svg {
+  animation: fan-spin 1.1s linear infinite;
+}
+
+@keyframes fan-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   DEVICE STATUS
+========================================================= */
+
+.device-status {
+  position: relative;
+  z-index: 2;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 7px 11px;
+
+  border-radius: 999px;
+
+  border: 1px solid #2c3851;
+
+  background: #192238;
+
+  color: #78869f;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.device-status span {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #69758b;
+}
+
+
+/* STATUS ON */
+
+.device-status.on {
+  border-color: rgba(60, 218, 137, 0.25);
+
+  background: rgba(45, 190, 112, 0.08);
+
+  color: #52df95;
+}
+
+.device-status.on span {
+  background: #45dc8d;
+
+  box-shadow:
+    0 0 9px rgba(69, 220, 141, 0.7);
+}
+
+
+/* =========================================================
+   CARD TITLE
+========================================================= */
+
+.device-card h2 {
+  position: relative;
+  z-index: 2;
+
+  margin: 0;
+
+  color: #f3f6ff;
+
+  font-size: 25px;
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+}
+
+.device-card > p {
+  position: relative;
+  z-index: 2;
+
+  margin: 9px 0 0;
+
+  color: #8996ae;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   DEVICE CONTROL
+========================================================= */
+
+.device-control {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+
+  margin-top: 29px;
+}
+
+
+/* =========================================================
+   DEVICE BUTTON
+========================================================= */
+
+.device-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  min-width: 125px;
+  height: 44px;
+
+  padding: 0 18px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #35425d;
+  border-radius: 11px;
+
+  background: #1a2438;
+
+  color: #e8edfa;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.device-button:hover:not(:disabled) {
+  background: #273451;
+
+  border-color: #536ca3;
+
+  transform: translateY(-1px);
+}
+
+.device-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.device-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   ACTIVE BUTTON
+========================================================= */
+
+.device-button.active {
+  background:
+    linear-gradient(
+      135deg,
+      #5967f4,
+      #347ef3
+    );
+
+  border-color: transparent;
+
+  color: white;
+
+  box-shadow:
+    0 8px 25px rgba(68, 103, 240, 0.25);
+}
+
+.device-button.active:hover:not(:disabled) {
+  background:
+    linear-gradient(
+      135deg,
+      #6875ff,
+      #408cff
+    );
+
+  box-shadow:
+    0 10px 30px rgba(68, 103, 240, 0.32);
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .devices-page {
+    padding: 32px 25px 55px;
+  }
+
+  .devices-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .devices-page {
+    padding: 25px 16px 45px;
+  }
+
+  .devices-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .devices-header h1 {
+    font-size: 34px;
+  }
+
+  .devices-header p {
+    font-size: 14px;
+  }
+
+  .refresh-devices {
+    width: 100%;
+  }
+
+  .device-connection {
+    padding: 14px;
+  }
+
+  .devices-grid {
+    gap: 16px;
+  }
+
+  .device-card {
+    min-height: 300px;
+    padding: 21px;
+    border-radius: 20px;
+  }
+
+  .device-card h2 {
+    font-size: 22px;
+  }
+
+  .device-icon {
+    width: 58px;
+    height: 58px;
+  }
+
+  .device-button {
+    width: 100%;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .device-card,
+  .device-button,
+  .refresh-devices,
+  .device-icon {
+    transition: none;
+  }
+
+  .device-card.fan-on .device-icon.fan svg {
+    animation: none;
+  }
+
+}

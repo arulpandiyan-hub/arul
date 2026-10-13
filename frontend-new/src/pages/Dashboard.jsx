@@ -1,453 +1,917 @@
+import { useEffect, useState } from "react";
+
 import {
   Lightbulb,
   Fan,
   Zap,
-  Mic,
-  Sparkles,
-  Wifi,
-  ShieldCheck,
-  ChevronRight,
   Power,
+  Sparkles,
+  ArrowRight,
+  Wifi,
+  Clock3,
 } from "lucide-react";
 
-import { Link } from "react-router-dom";
+import "./Dashboard.css";
+
+// =====================================================
+// FASTAPI BACKEND
+// =====================================================
+
+const API = "http://10.40.59.177:8000";
+
 
 function Dashboard() {
+
+  // ===================================================
+  // STATE
+  // ===================================================
+
+  const [lightOn, setLightOn] = useState(false);
+  const [fanOn, setFanOn] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const [backendOnline, setBackendOnline] = useState(false);
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+
+  // ===================================================
+  // REAL-TIME CLOCK
+  // ===================================================
+
+  useEffect(() => {
+
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+
+  }, []);
+
+
+  // ===================================================
+  // GREETING
+  // ===================================================
+
+  const getGreeting = () => {
+
+    const hour = currentTime.getHours();
+
+    if (hour >= 5 && hour < 12) {
+      return "Good morning";
+    }
+
+    if (hour >= 12 && hour < 17) {
+      return "Good afternoon";
+    }
+
+    if (hour >= 17 && hour < 21) {
+      return "Good evening";
+    }
+
+    return "Good night";
+  };
+
+
+  const formattedTime =
+    currentTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+
+
+  const formattedDate =
+    currentTime.toLocaleDateString([], {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+
+
+  // ===================================================
+  // GET DEVICE STATUS
+  // ===================================================
+
+  const getDeviceStatus = async () => {
+
+    try {
+
+      const response = await fetch(
+        `${API}/devices`,
+        {
+          method: "GET",
+          cache: "no-store",
+        }
+      );
+
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP ${response.status}`
+        );
+      }
+
+
+      const data = await response.json();
+
+
+      console.log(
+        "ESP32 device status:",
+        data
+      );
+
+
+      if (
+        typeof data.light === "boolean"
+      ) {
+        setLightOn(data.light);
+      }
+
+
+      if (
+        typeof data.fan === "boolean"
+      ) {
+        setFanOn(data.fan);
+      }
+
+
+      setBackendOnline(true);
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Backend connection error:",
+        error
+      );
+
+      setBackendOnline(false);
+    }
+
+  };
+
+
+  // ===================================================
+  // CHECK BACKEND
+  // ===================================================
+
+  useEffect(() => {
+
+    getDeviceStatus();
+
+
+    const statusTimer =
+      setInterval(() => {
+
+        getDeviceStatus();
+
+      }, 3000);
+
+
+    return () => {
+      clearInterval(statusTimer);
+    };
+
+  }, []);
+
+
+  // ===================================================
+  // CONTROL DEVICE
+  // ===================================================
+
+  const controlDevice = async (
+    device,
+    state
+  ) => {
+
+    if (loading) {
+      return;
+    }
+
+
+    setLoading(true);
+
+
+    try {
+
+      const action =
+        state ? "on" : "off";
+
+
+      console.log(
+        `Sending ${device} ${action}`
+      );
+
+
+      const response =
+        await fetch(
+          `${API}/device/${device}/${action}`,
+          {
+            method: "POST",
+          }
+        );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          `HTTP ${response.status}`
+        );
+
+      }
+
+
+      const data =
+        await response.json();
+
+
+      console.log(
+        "Device response:",
+        data
+      );
+
+
+      if (device === "light") {
+
+        setLightOn(state);
+
+      }
+
+
+      if (device === "fan") {
+
+        setFanOn(state);
+
+      }
+
+
+      setBackendOnline(true);
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Device control error:",
+        error
+      );
+
+      setBackendOnline(false);
+
+    }
+
+    finally {
+
+      setLoading(false);
+
+    }
+
+  };
+
+
+  // ===================================================
+  // LIGHT
+  // ===================================================
+
+  const toggleLight = () => {
+
+    controlDevice(
+      "light",
+      !lightOn
+    );
+
+  };
+
+
+  // ===================================================
+  // FAN
+  // ===================================================
+
+  const toggleFan = () => {
+
+    controlDevice(
+      "fan",
+      !fanOn
+    );
+
+  };
+
+
+  // ===================================================
+  // ALL ON
+  // ===================================================
+
+  const allOn = async () => {
+
+    if (loading) {
+      return;
+    }
+
+
+    setLoading(true);
+
+
+    try {
+
+      const lightResponse =
+        await fetch(
+          `${API}/device/light/on`,
+          {
+            method: "POST",
+          }
+        );
+
+
+      if (!lightResponse.ok) {
+        throw new Error(
+          `Light HTTP ${lightResponse.status}`
+        );
+      }
+
+
+      const fanResponse =
+        await fetch(
+          `${API}/device/fan/on`,
+          {
+            method: "POST",
+          }
+        );
+
+
+      if (!fanResponse.ok) {
+        throw new Error(
+          `Fan HTTP ${fanResponse.status}`
+        );
+      }
+
+
+      setLightOn(true);
+      setFanOn(true);
+
+      setBackendOnline(true);
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "All ON error:",
+        error
+      );
+
+      setBackendOnline(false);
+
+    }
+
+    finally {
+
+      setLoading(false);
+
+    }
+
+  };
+
+
+  // ===================================================
+  // ALL OFF
+  // ===================================================
+
+  const allOff = async () => {
+
+    if (loading) {
+      return;
+    }
+
+
+    setLoading(true);
+
+
+    try {
+
+      const lightResponse =
+        await fetch(
+          `${API}/device/light/off`,
+          {
+            method: "POST",
+          }
+        );
+
+
+      if (!lightResponse.ok) {
+        throw new Error(
+          `Light HTTP ${lightResponse.status}`
+        );
+      }
+
+
+      const fanResponse =
+        await fetch(
+          `${API}/device/fan/off`,
+          {
+            method: "POST",
+          }
+        );
+
+
+      if (!fanResponse.ok) {
+        throw new Error(
+          `Fan HTTP ${fanResponse.status}`
+        );
+      }
+
+
+      setLightOn(false);
+      setFanOn(false);
+
+      setBackendOnline(true);
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "All OFF error:",
+        error
+      );
+
+      setBackendOnline(false);
+
+    }
+
+    finally {
+
+      setLoading(false);
+
+    }
+
+  };
+
+
+  // ===================================================
+  // UI
+  // ===================================================
+
   return (
+
     <div className="dashboard-page">
 
-      {/* HERO */}
 
-      <section className="hero-section">
+      {/* =================================================
+          TOP BAR
+      ================================================= */}
 
-        <div className="hero-content">
+      <div className="dashboard-topbar">
 
-          <div className="eyebrow">
-            <span className="eyebrow-star">✦</span>
-            INTELLIGENT LIVING
+        <div className="brand-area">
+
+          <div className="brand-icon">
+            <Sparkles size={20} />
           </div>
 
-          <h1>
-            Your home.
-            <span>Your control.</span>
-          </h1>
-
-          <p className="hero-text">
-            Control your devices, automate your home,
-            and interact with your AI assistant from one
-            beautiful dashboard.
-          </p>
-
-          <div className="hero-actions">
-
-            <Link
-              to="/devices"
-              className="primary-button"
-            >
-              <Power size={18} />
-              Control Devices
-            </Link>
-
-            <Link
-              to="/ai"
-              className="secondary-button"
-            >
-              <Sparkles size={18} />
-              Ask AI
-            </Link>
-
-          </div>
-
-        </div>
-
-
-        {/* HOME ORB */}
-
-        <div className="home-orb-area">
-
-          <div className="orb-ring ring-one"></div>
-          <div className="orb-ring ring-two"></div>
-          <div className="orb-ring ring-three"></div>
-
-          <div className="home-orb">
-
-            <div className="house-shape">
-
-              <div className="roof"></div>
-
-              <div className="house-body">
-                <div className="house-door"></div>
-              </div>
-
-            </div>
-
-          </div>
-
-          <div className="orb-status">
-            <span></span>
-            HOME ONLINE
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* HOME STATUS */}
-
-      <section className="status-grid">
-
-        <div className="status-card">
-
-          <div className="status-card-icon blue">
-            <Lightbulb size={23} />
-          </div>
-
-          <div className="status-card-content">
-
-            <span>ACTIVE DEVICES</span>
-
-            <strong>0</strong>
-
-            <small>
-              of 2 devices
-            </small>
-
-          </div>
-
-        </div>
-
-
-        <div className="status-card">
-
-          <div className="status-card-icon purple">
-            <Zap size={23} />
-          </div>
-
-          <div className="status-card-content">
-
-            <span>POWER STATUS</span>
-
-            <strong>Ready</strong>
-
-            <small>
-              System operating normally
-            </small>
-
-          </div>
-
-        </div>
-
-
-        <div className="status-card">
-
-          <div className="status-card-icon green">
-            <Wifi size={23} />
-          </div>
-
-          <div className="status-card-content">
-
-            <span>CONNECTION</span>
-
-            <strong>Online</strong>
-
-            <small>
-              ESP32 connected
-            </small>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* DEVICES */}
-
-      <section className="dashboard-section">
-
-        <div className="section-header">
 
           <div>
-            <div className="section-label">
-              CONTROL CENTER
-            </div>
 
-            <h2>
-              Your Devices
-            </h2>
-          </div>
+            <span className="brand-title">
+              SmartHome
+            </span>
 
-          <Link
-            to="/devices"
-            className="view-link"
-          >
-            View all
-            <ChevronRight size={17} />
-          </Link>
+            <span className="brand-subtitle">
+              Home automation
+            </span>
 
-        </div>
-
-
-        <div className="dashboard-device-grid">
-
-          {/* LIGHT */}
-
-          <Link
-            to="/devices"
-            className="dashboard-device-card light-card"
-          >
-
-            <div className="dashboard-device-top">
-
-              <div className="dashboard-device-icon light">
-                <Lightbulb
-                  size={31}
-                  strokeWidth={1.8}
-                />
-              </div>
-
-              <div className="device-off">
-                <span></span>
-                OFF
-              </div>
-
-            </div>
-
-            <div className="dashboard-device-info">
-
-              <h3>
-                Living Room Light
-              </h3>
-
-              <p>
-                Main lighting system
-              </p>
-
-            </div>
-
-            <div className="device-preview-control">
-
-              <span>
-                Turn ON
-              </span>
-
-              <ChevronRight size={19} />
-
-            </div>
-
-          </Link>
-
-
-          {/* FAN */}
-
-          <Link
-            to="/devices"
-            className="dashboard-device-card fan-card"
-          >
-
-            <div className="dashboard-device-top">
-
-              <div className="dashboard-device-icon fan">
-                <Fan
-                  size={31}
-                  strokeWidth={1.8}
-                />
-              </div>
-
-              <div className="device-off">
-                <span></span>
-                OFF
-              </div>
-
-            </div>
-
-            <div className="dashboard-device-info">
-
-              <h3>
-                Living Room Fan
-              </h3>
-
-              <p>
-                Smart cooling system
-              </p>
-
-            </div>
-
-            <div className="device-preview-control">
-
-              <span>
-                Turn ON
-              </span>
-
-              <ChevronRight size={19} />
-
-            </div>
-
-          </Link>
-
-        </div>
-
-      </section>
-
-
-      {/* QUICK ACCESS */}
-
-      <section className="dashboard-section">
-
-        <div className="section-header">
-
-          <div>
-            <div className="section-label">
-              SMART FEATURES
-            </div>
-
-            <h2>
-              Quick Access
-            </h2>
           </div>
 
         </div>
 
 
-        <div className="quick-access-grid">
-
-          <Link
-            to="/voice"
-            className="quick-access-card voice"
-          >
-
-            <div className="quick-access-icon">
-              <Mic size={24} />
-            </div>
-
-            <div>
-              <h3>
-                Voice Control
-              </h3>
-
-              <p>
-                Talk to your home
-              </p>
-            </div>
-
-            <ChevronRight />
-
-          </Link>
-
-
-          <Link
-            to="/ai"
-            className="quick-access-card ai"
-          >
-
-            <div className="quick-access-icon">
-              <Sparkles size={24} />
-            </div>
-
-            <div>
-              <h3>
-                Gemini AI
-              </h3>
-
-              <p>
-                Ask your home anything
-              </p>
-            </div>
-
-            <ChevronRight />
-
-          </Link>
-
-
-          <Link
-            to="/quick-actions"
-            className="quick-access-card actions"
-          >
-
-            <div className="quick-access-icon">
-              <Zap size={24} />
-            </div>
-
-            <div>
-              <h3>
-                Quick Actions
-              </h3>
-
-              <p>
-                Control everything fast
-              </p>
-            </div>
-
-            <ChevronRight />
-
-          </Link>
-
-        </div>
-
-      </section>
-
-
-      {/* BOTTOM STATUS */}
-
-      <section className="dashboard-bottom-grid">
-
-        <Link
-          to="/security"
-          className="security-mini-card"
+        <div
+          className={
+            backendOnline
+              ? "online-badge"
+              : "online-badge offline"
+          }
         >
 
-          <div className="security-mini-icon">
-            <ShieldCheck size={25} />
+          <span className="online-dot"></span>
+
+          {backendOnline
+            ? "Online"
+            : "Offline"}
+
+        </div>
+
+      </div>
+
+
+      {/* =================================================
+          WELCOME
+      ================================================= */}
+
+      <section className="welcome-card">
+
+        <div className="welcome-content">
+
+          <span className="welcome-small">
+            YOUR SMART HOME
+          </span>
+
+
+          <h1>
+            {getGreeting()}
+          </h1>
+
+
+          <p>
+            Welcome back. Your home is ready.
+          </p>
+
+
+          <div className="time-row">
+
+            <Clock3 size={16} />
+
+            <strong>
+              {formattedTime}
+            </strong>
+
+            <span>
+              {formattedDate}
+            </span>
+
           </div>
 
-          <div>
-            <span>HOME SECURITY</span>
-
-            <h3>
-              Home Protected
-            </h3>
-
-            <p>
-              No security alerts detected
-            </p>
-          </div>
-
-          <div className="security-check">
-            ✓
-          </div>
-
-        </Link>
+        </div>
 
 
-        <div className="assistant-mini-card">
+        <div className="welcome-glow">
 
-          <div className="assistant-mini-icon">
-            <Sparkles size={25} />
-          </div>
-
-          <div>
-            <span>AI ASSISTANT</span>
-
-            <h3>
-              Ready to help
-            </h3>
-
-            <p>
-              Ask me to control your home
-            </p>
-          </div>
-
-          <Link to="/ai">
-            <ChevronRight />
-          </Link>
+          <Sparkles size={52} />
 
         </div>
 
       </section>
 
+
+      {/* =================================================
+          DEVICES
+      ================================================= */}
+
+      <section className="home-section">
+
+        <div className="section-title-row">
+
+          <div>
+
+            <span className="section-kicker">
+              YOUR DEVICES
+            </span>
+
+            <h2>
+              Living Room
+            </h2>
+
+          </div>
+
+
+          <div className="connection-status">
+
+            <Wifi size={15} />
+
+            {backendOnline
+              ? "Connected"
+              : "Disconnected"}
+
+          </div>
+
+        </div>
+
+
+        <div className="device-grid">
+
+
+          {/* =================================================
+              LIGHT
+          ================================================= */}
+
+          <div
+            className={
+              `device-card light-device ${lightOn ? "active" : ""
+              }`
+            }
+          >
+
+            <div className="device-header">
+
+              <div
+                className={
+                  `device-icon ${lightOn ? "active" : ""
+                  }`
+                }
+              >
+
+                <Lightbulb size={26} />
+
+              </div>
+
+
+              <span
+                className={
+                  `device-status ${lightOn ? "active" : ""
+                  }`
+                }
+              >
+
+                {lightOn
+                  ? "ON"
+                  : "OFF"}
+
+              </span>
+
+            </div>
+
+
+            <div className="device-main">
+
+              <h3>
+                Light
+              </h3>
+
+
+              <p>
+
+                {lightOn
+                  ? "Living room is illuminated"
+                  : "Light is currently off"}
+
+              </p>
+
+            </div>
+
+
+            <button
+              className={
+                `device-toggle ${lightOn ? "active" : ""
+                }`
+              }
+              onClick={toggleLight}
+              disabled={loading}
+              aria-label="Toggle light"
+            >
+
+              <span></span>
+
+            </button>
+
+          </div>
+
+
+          {/* =================================================
+              FAN
+          ================================================= */}
+
+          <div
+            className={
+              `device-card fan-device ${fanOn ? "active" : ""
+              }`
+            }
+          >
+
+            <div className="device-header">
+
+              <div
+                className={
+                  `device-icon fan ${fanOn ? "active" : ""
+                  }`
+                }
+              >
+
+                <Fan size={26} />
+
+              </div>
+
+
+              <span
+                className={
+                  `device-status ${fanOn ? "active" : ""
+                  }`
+                }
+              >
+
+                {fanOn
+                  ? "ON"
+                  : "OFF"}
+
+              </span>
+
+            </div>
+
+
+            <div className="device-main">
+
+              <h3>
+                Fan
+              </h3>
+
+
+              <p>
+
+                {fanOn
+                  ? "Living room fan is running"
+                  : "Fan is currently off"}
+
+              </p>
+
+            </div>
+
+
+            <button
+              className={
+                `device-toggle ${fanOn ? "active" : ""
+                }`
+              }
+              onClick={toggleFan}
+              disabled={loading}
+              aria-label="Toggle fan"
+            >
+
+              <span></span>
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* =================================================
+          QUICK ACTIONS
+      ================================================= */}
+
+      <section className="home-section">
+
+        <div className="section-title-row">
+
+          <div>
+
+            <span className="section-kicker">
+              FAST CONTROL
+            </span>
+
+            <h2>
+              Quick Actions
+            </h2>
+
+          </div>
+
+
+          <Zap size={20} />
+
+        </div>
+
+
+        <div className="quick-actions">
+
+
+          {/* ALL ON */}
+
+          <button
+            className="quick-card"
+            onClick={allOn}
+            disabled={loading}
+          >
+
+            <div className="quick-icon">
+
+              <Zap size={21} />
+
+            </div>
+
+
+            <div>
+
+              <strong>
+                All ON
+              </strong>
+
+              <span>
+                Turn everything on
+              </span>
+
+            </div>
+
+          </button>
+
+
+          {/* ALL OFF */}
+
+          <button
+            className="quick-card"
+            onClick={allOff}
+            disabled={loading}
+          >
+
+            <div className="quick-icon off">
+
+              <Power size={21} />
+
+            </div>
+
+
+            <div>
+
+              <strong>
+                All OFF
+              </strong>
+
+              <span>
+                Turn everything off
+              </span>
+
+            </div>
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+      {/* =================================================
+          AI CARD
+      ================================================= */}
+
+      <section className="ai-home-card">
+
+        <div className="ai-orb">
+
+          <Sparkles size={28} />
+
+        </div>
+
+
+        <div className="ai-home-content">
+
+          <span>
+            SMART ASSISTANT
+          </span>
+
+
+          <h2>
+            Ask SmartHome AI
+          </h2>
+
+
+          <p>
+            Control your home naturally
+            with AI and voice.
+          </p>
+
+
+          <a
+            href="/ai"
+            className="ai-home-button"
+          >
+
+            Ask AI
+
+            <ArrowRight size={17} />
+
+          </a>
+
+        </div>
+
+      </section>
+
+
+      {/* =================================================
+          FOOTER
+      ================================================= */}
+
+      <div className="home-footer">
+
+        <span className="footer-dot"></span>
+
+        {backendOnline
+          ? "SmartHome is connected and ready"
+          : "SmartHome backend is offline"}
+
+      </div>
+
+
     </div>
+
   );
+
 }
+
 
 export default Dashboard;

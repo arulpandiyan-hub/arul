@@ -1,406 +1,437 @@
-import { useEffect, useRef, useState } from "react";
-
+import { useState, useRef } from "react";
+import { Capacitor } from "@capacitor/core";
 import {
   Mic,
-  History,
-  Lightbulb,
-  Fan,
-  Home,
-  Sparkles,
-  Wifi,
-  CheckCircle2,
+  MicOff,
+  Volume2,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
+
+import { SpeechRecognition } from "@capacitor-community/speech-recognition";
+import { TextToSpeech } from "@capacitor-community/text-to-speech";
+
+import "./Voice.css";
+
+const API = "http://10.40.59.177:8000";
 
 function Voice() {
   const [listening, setListening] = useState(false);
-  const [transcript, setTranscript] = useState("");
-  const [commands, setCommands] = useState([
-    {
-      icon: "light",
-      text: "Turn on the living room light",
-      result: "Light turned ON",
-      time: "10:24 AM",
-    },
-    {
-      icon: "fan",
-      text: "Turn off the fan",
-      result: "Fan turned OFF",
-      time: "10:23 AM",
-    },
-    {
-      icon: "home",
-      text: "Turn everything off",
-      result: "All devices turned OFF",
-      time: "10:21 AM",
-    },
-  ]);
+  const [command, setCommand] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const recognitionRef = useRef(null);
 
-  useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition ||
-      window.webkitSpeechRecognition;
+  // ==========================================
+  // TEXT TO SPEECH
+  // ==========================================
 
-    if (!SpeechRecognition) {
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.lang = "en-US";
-
-    recognition.onstart = () => {
-      setListening(true);
-      setTranscript("");
-    };
-
-    recognition.onresult = (event) => {
-      let text = "";
-
-      for (
-        let i = event.resultIndex;
-        i < event.results.length;
-        i++
-      ) {
-        text += event.results[i][0].transcript;
+  const speak = async (text) => {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        await TextToSpeech.stop();
+        await TextToSpeech.speak({
+          text: text,
+          lang: "en-US",
+          rate: 1.0,
+          pitch: 1.0,
+          volume: 1.0,
+          queueStrategy: 0,
+        });
+        return;
       }
 
-      setTranscript(text);
-    };
+      // Browser fallback
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = "en-US";
+        speech.rate = 1;
+        window.speechSynthesis.speak(speech);
+      }
+    } catch (err) {
+      console.error("TTS ERROR:", err);
+    }
+  };
 
-    recognition.onend = () => {
-      setListening(false);
-    };
+  // ==========================================
+  // PROCESS DEVICE COMMAND
+  // ==========================================
 
-    recognition.onerror = () => {
-      setListening(false);
-    };
+  const processCommand = async (spokenText) => {
+    const text = spokenText.toLowerCase();
 
-    recognitionRef.current = recognition;
+    let device = null;
+    let action = null;
 
-    return () => {
-      recognition.stop();
-    };
-  }, []);
-
-  const startListening = () => {
-    if (!recognitionRef.current) {
-      alert(
-        "Speech recognition is not supported in this browser."
-      );
+    if (
+      text.includes("light") &&
+      (text.includes("turn on") ||
+        text.includes("switch on") ||
+        text.includes("lights on") ||
+        text.endsWith("on"))
+    ) {
+      device = "light";
+      action = "on";
+    } else if (
+      text.includes("light") &&
+      (text.includes("turn off") ||
+        text.includes("switch off") ||
+        text.includes("lights off") ||
+        text.endsWith("off"))
+    ) {
+      device = "light";
+      action = "off";
+    } else if (
+      text.includes("fan") &&
+      (text.includes("turn on") ||
+        text.includes("switch on") ||
+        text.includes("fan on") ||
+        text.endsWith("on"))
+    ) {
+      device = "fan";
+      action = "on";
+    } else if (
+      text.includes("fan") &&
+      (text.includes("turn off") ||
+        text.includes("switch off") ||
+        text.includes("fan off") ||
+        text.endsWith("off"))
+    ) {
+      device = "fan";
+      action = "off";
+    } else {
+      const response =
+        "I didn't understand that command. Try saying, turn on the light.";
+      setMessage(response);
+      await speak(response);
       return;
     }
 
     try {
-      recognitionRef.current.start();
-    } catch {
-      // Prevent duplicate start errors.
+      setError("");
+
+      const deviceName = device === "light" ? "Light" : "Fan";
+      const actionName = action === "on" ? "on" : "off";
+
+      setMessage(`Turning ${deviceName} ${actionName}...`);
+
+      const response = await fetch(
+        `${API}/device/${device}/${action}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      const successMessage = `${deviceName} turned ${actionName}.`;
+      setMessage(successMessage);
+      await speak(successMessage);
+    } catch (err) {
+      console.error("DEVICE CONTROL ERROR:", err);
+      setMessage("");
+      const errorMessage =
+        "I could not connect to your SmartHome controller.";
+      setError(errorMessage);
+      await speak(errorMessage);
     }
   };
 
-  const stopListening = () => {
-    recognitionRef.current?.stop();
+  // ==========================================
+  // START VOICE — NATIVE (Android APK)
+  // ==========================================
+
+  const startNativeVoice = async () => {
+    const available = await SpeechRecognition.available();
+
+    if (!available.available) {
+      setError(
+        "Speech recognition is not available on this device."
+      );
+      return;
+    }
+
+    const permission =
+      await SpeechRecognition.requestPermissions();
+
+    if (permission.speechRecognition !== "granted") {
+      setError(
+        "Microphone permission is required for voice control."
+      );
+      return;
+    }
+
+    setListening(true);
+    setMessage("Listening...");
+
+    const result = await SpeechRecognition.start({
+      language: "en-US",
+      maxResults: 1,
+      prompt: "Speak your SmartHome command",
+      partialResults: false,
+      popup: true,
+    });
+
+    setListening(false);
+
+    const spokenText =
+      result.matches && result.matches.length > 0
+        ? result.matches[0].trim()
+        : "";
+
+    if (!spokenText) {
+      setMessage("");
+      setError("I couldn't hear your command. Please try again.");
+      return;
+    }
+
+    setCommand(spokenText);
+    await processCommand(spokenText);
   };
 
-  const handleVoiceButton = () => {
+  // ==========================================
+  // START VOICE — BROWSER FALLBACK
+  // ==========================================
+
+  const startBrowserVoice = () => {
+    const BrowserSpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    if (!BrowserSpeechRecognition) {
+      setError(
+        "Voice recognition is not supported in this browser. " +
+        "Please use Google Chrome or Microsoft Edge."
+      );
+      return;
+    }
+
+    // Stop if already listening
     if (listening) {
-      stopListening();
-    } else {
-      startListening();
+      recognitionRef.current?.stop();
+      setListening(false);
+      return;
+    }
+
+    const recognition = new BrowserSpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setListening(true);
+      setError("");
+      setMessage("Listening...");
+      setCommand("");
+    };
+
+    recognition.onresult = (event) => {
+      const spokenText =
+        event.results?.[0]?.[0]?.transcript?.trim() || "";
+
+      setListening(false);
+      setMessage("");
+
+      if (spokenText) {
+        setCommand(spokenText);
+        processCommand(spokenText);
+      } else {
+        setError("I couldn't hear your command. Please try again.");
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Voice error:", event.error);
+      setListening(false);
+      setMessage("");
+      recognitionRef.current = null;
+
+      if (event.error === "not-allowed") {
+        setError(
+          "Microphone access was denied. " +
+          "Open this page on localhost (not an IP address) " +
+          "and allow microphone in your browser settings."
+        );
+      } else if (event.error === "no-speech") {
+        setError("No speech detected. Please try again.");
+      } else if (event.error === "network") {
+        setError(
+          "Network error during voice recognition. Check your connection."
+        );
+      } else {
+        setError(
+          `Voice recognition error: ${event.error || "unknown"}.`
+        );
+      }
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognitionRef.current = recognition;
+
+    try {
+      recognition.start();
+    } catch (err) {
+      console.error("Could not start recognition:", err);
+      setError(
+        "Could not start voice recognition. " +
+        "Make sure you are using Chrome/Edge on localhost or HTTPS."
+      );
     }
   };
 
-  const getCommandIcon = (type) => {
-    if (type === "light") {
-      return <Lightbulb size={22} />;
-    }
+  // ==========================================
+  // MAIN START HANDLER
+  // ==========================================
 
-    if (type === "fan") {
-      return <Fan size={22} />;
-    }
+  const startListening = async () => {
+    setError("");
+    setMessage("");
+    setCommand("");
 
-    return <Home size={22} />;
+    try {
+      if (Capacitor.isNativePlatform()) {
+        await startNativeVoice();
+      } else {
+        startBrowserVoice();
+      }
+    } catch (err) {
+      console.error("VOICE ERROR:", err);
+      setListening(false);
+      setMessage("");
+      setError("Voice recognition failed. Please try again.");
+    }
   };
+
+  // ==========================================
+  // UI
+  // ==========================================
 
   return (
-    <div className="voice-page">
+    <div className="feature-page">
 
-      {/* HEADER */}
-
-      <div className="voice-header">
-
-        <div>
-
-          <div className="voice-label">
-            VOICE CONTROL
-          </div>
-
-          <h1>
-            Voice Control
-          </h1>
-
-          <p>
-            Control your home using your voice.
-          </p>
-
-        </div>
-
-
-        <div className="voice-header-status">
-
-          <div className="ready-status">
-            <span></span>
-            {listening ? "LISTENING" : "READY"}
-          </div>
-
-          <div className="esp-status">
-
-            <Wifi size={20} />
-
-            <div>
-              <strong>
-                ESP32
-              </strong>
-
-              <span>
-                ONLINE
-              </span>
-            </div>
-
-          </div>
-
-        </div>
-
+      <div className="section-label">
+        VOICE CONTROL
       </div>
 
+      <h1>Voice Control</h1>
 
-      {/* MICROPHONE AREA */}
+      <p className="feature-description">
+        Control your SmartHome using your voice.
+      </p>
 
-      <section className={
-        listening
-          ? "voice-main listening"
-          : "voice-main"
-      }>
+      <div className="voice-container">
 
         <button
-          className="microphone-orb"
-          onClick={handleVoiceButton}
-          aria-label={
+          className={
             listening
-              ? "Stop listening"
-              : "Start listening"
+              ? "voice-button listening"
+              : "voice-button"
           }
+          onClick={startListening}
+          disabled={listening}
         >
-
-          <div className="mic-ring ring-a"></div>
-          <div className="mic-ring ring-b"></div>
-          <div className="mic-ring ring-c"></div>
-
-          <div className="mic-circle">
-
-            <Mic
-              size={72}
-              strokeWidth={1.5}
-            />
-
-          </div>
-
+          {listening ? (
+            <MicOff size={40} />
+          ) : (
+            <Mic size={40} />
+          )}
         </button>
-
 
         <h2>
           {listening
             ? "Listening..."
-            : "Tap to Start Listening"}
+            : "Tap to Speak"}
         </h2>
 
-        <p className="voice-subtitle">
+        <p>
           {listening
-            ? "I'm listening to your command"
-            : "I'm ready to help you!"}
+            ? "Speak your command..."
+            : "Control your light or fan"}
         </p>
-
-
-        {/* TRANSCRIPT */}
-
-        {transcript && (
-          <div className="voice-transcript">
-
-            <span>
-              You said
-            </span>
-
-            <strong>
-              "{transcript}"
-            </strong>
-
-          </div>
-        )}
-
 
         <button
           className="start-listening-button"
-          onClick={handleVoiceButton}
+          onClick={startListening}
+          disabled={listening}
         >
-
-          <Mic size={21} />
+          <Mic size={20} />
 
           {listening
-            ? "Stop Listening"
-            : "Start Listening"}
-
+            ? "Listening..."
+            : "Start Voice Control"}
         </button>
 
-
         <div className="voice-example">
+          <Volume2 size={18} />
 
-          <Sparkles size={16} />
-
-          Try saying:
+          <span>
+            Try saying:
+          </span>
 
           <strong>
-            "Turn on the living room light"
-          </strong>
-
-        </div>
-
-      </section>
-
-
-      {/* RECENT COMMANDS */}
-
-      <section className="recent-commands">
-
-        <div className="recent-header">
-
-          <div className="recent-title">
-
-            <History size={22} />
-
-            <h2>
-              Recent Commands
-            </h2>
-
-          </div>
-
-          <button>
-            View All
-          </button>
-
-        </div>
-
-
-        <div className="command-list">
-
-          {commands.map((command, index) => (
-
-            <div
-              className="command-item"
-              key={index}
-            >
-
-              <div
-                className={
-                  `command-icon ${command.icon}`
-                }
-              >
-                {getCommandIcon(command.icon)}
-              </div>
-
-
-              <div className="command-content">
-
-                <strong>
-                  {command.text}
-                </strong>
-
-                <span>
-                  {command.result}
-                </span>
-
-              </div>
-
-
-              <div className="command-time">
-
-                <span>
-                  {command.time}
-                </span>
-
-                <strong>
-                  SUCCESS
-                </strong>
-
-              </div>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </section>
-
-
-      {/* VOICE TIPS */}
-
-      <section className="voice-tips">
-
-        <div className="tips-title">
-
-          <Sparkles size={20} />
-
-          Voice Tips
-
-        </div>
-
-        <div className="tips-list">
-
-          <span>
             "Turn on the light"
-          </span>
-
-          <i>|</i>
-
-          <span>
-            "Turn off the fan"
-          </span>
-
-          <i>|</i>
-
-          <span>
-            "Turn everything off"
-          </span>
-
-          <i>|</i>
-
-          <span>
-            "What is the status?"
-          </span>
-
+          </strong>
         </div>
-
-      </section>
-
-
-      {/* CONNECTION FOOTER */}
-
-      <div className="voice-connection">
-
-        <CheckCircle2 size={18} />
-
-        <span>
-          Voice control system ready
-        </span>
-
-        <strong>
-          ESP32 CONNECTED
-        </strong>
 
       </div>
+
+      {command && (
+        <div className="voice-result">
+
+          <Mic size={18} />
+
+          <div>
+            <span>You said</span>
+
+            <strong>
+              {command}
+            </strong>
+          </div>
+
+        </div>
+      )}
+
+      {message && (
+        <div className="feature-message">
+
+          <CheckCircle size={18} />
+
+          <span>
+            {message}
+          </span>
+
+        </div>
+      )}
+
+      {error && (
+        <div className="voice-error">
+
+          <AlertCircle size={18} />
+
+          <span>
+            {error}
+          </span>
+
+        </div>
+      )}
 
     </div>
   );

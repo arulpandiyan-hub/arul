@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Lightbulb, Fan, Wifi, WifiOff, RefreshCw } from "lucide-react";
-
-const API = "http://127.0.0.1:8000";
+import "./Devices.css";
+const API = "http://10.40.59.177:8000";
 
 function Devices() {
   const [devices, setDevices] = useState({
@@ -145,7 +145,7 @@ function Devices() {
           <span>
             {connected
               ? "FastAPI is responding"
-              : "Cannot reach 127.0.0.1:8000"}
+              : "Cannot reach 10.40.59.177:8000"}
           </span>
         </div>
 

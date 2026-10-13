@@ -15,14 +15,24 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-function SettingsPage() {
-  const [darkMode, setDarkMode] = useState(true);
+import "./SettingsPage.css";
+
+
+function SettingsPage({ darkMode, setDarkMode }) {
+
   const [notifications, setNotifications] = useState(true);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [aiEnabled, setAiEnabled] = useState(true);
 
+
+  /* =====================================================
+     TOGGLE COMPONENT
+  ===================================================== */
+
   const Toggle = ({ enabled, onChange }) => (
+
     <button
+      type="button"
       className={
         enabled
           ? "settings-toggle on"
@@ -31,14 +41,22 @@ function SettingsPage() {
       onClick={onChange}
       aria-label="Toggle setting"
     >
+
       <span />
+
     </button>
+
   );
 
+
   return (
+
     <div className="settings-page">
 
-      {/* HEADER */}
+
+      {/* =================================================
+          HEADER
+      ================================================= */}
 
       <div className="settings-header">
 
@@ -58,6 +76,7 @@ function SettingsPage() {
 
         </div>
 
+
         <div className="settings-icon">
           <Settings size={26} />
         </div>
@@ -65,13 +84,16 @@ function SettingsPage() {
       </div>
 
 
-      {/* CONNECTION STATUS */}
+      {/* =================================================
+          CONNECTION STATUS
+      ================================================= */}
 
       <section className="settings-connection">
 
         <div className="settings-connection-icon">
           <Wifi size={22} />
         </div>
+
 
         <div className="settings-connection-content">
 
@@ -85,24 +107,38 @@ function SettingsPage() {
 
         </div>
 
+
         <div className="settings-online">
+
           <span />
+
           ONLINE
+
         </div>
 
       </section>
 
 
-      {/* APPEARANCE */}
+      {/* =================================================
+          APPEARANCE
+      ================================================= */}
 
       <section className="settings-section">
 
         <div className="settings-section-heading">
 
           <div>
-            <span>APPEARANCE</span>
-            <h2>Theme</h2>
+
+            <span>
+              APPEARANCE
+            </span>
+
+            <h2>
+              Theme
+            </h2>
+
           </div>
+
 
           {darkMode ? (
             <Moon size={20} />
@@ -115,7 +151,13 @@ function SettingsPage() {
 
         <div className="theme-options">
 
+
+          {/* =================================================
+              DARK MODE
+          ================================================= */}
+
           <button
+            type="button"
             className={
               darkMode
                 ? "theme-option selected"
@@ -127,9 +169,17 @@ function SettingsPage() {
             <Moon size={20} />
 
             <div>
-              <strong>Dark Mode</strong>
-              <span>Comfortable for night use</span>
+
+              <strong>
+                Dark Mode
+              </strong>
+
+              <span>
+                Comfortable for night use
+              </span>
+
             </div>
+
 
             {darkMode && (
               <CheckCircle2 size={18} />
@@ -138,7 +188,12 @@ function SettingsPage() {
           </button>
 
 
+          {/* =================================================
+              LIGHT MODE
+          ================================================= */}
+
           <button
+            type="button"
             className={
               !darkMode
                 ? "theme-option selected"
@@ -150,9 +205,17 @@ function SettingsPage() {
             <Sun size={20} />
 
             <div>
-              <strong>Light Mode</strong>
-              <span>Bright and clean interface</span>
+
+              <strong>
+                Light Mode
+              </strong>
+
+              <span>
+                Bright and clean interface
+              </span>
+
             </div>
+
 
             {!darkMode && (
               <CheckCircle2 size={18} />
@@ -165,15 +228,24 @@ function SettingsPage() {
       </section>
 
 
-      {/* SMART FEATURES */}
+      {/* =================================================
+          SMART FEATURES
+      ================================================= */}
 
       <section className="settings-section">
 
         <div className="settings-section-heading">
 
           <div>
-            <span>SMART FEATURES</span>
-            <h2>Automation</h2>
+
+            <span>
+              SMART FEATURES
+            </span>
+
+            <h2>
+              Automation
+            </h2>
+
           </div>
 
           <Sparkles size={20} />
@@ -183,11 +255,15 @@ function SettingsPage() {
 
         <div className="settings-list">
 
+
+          {/* NOTIFICATIONS */}
+
           <div className="settings-row">
 
             <div className="settings-row-icon blue">
               <Bell size={19} />
             </div>
+
 
             <div className="settings-row-content">
 
@@ -201,6 +277,7 @@ function SettingsPage() {
 
             </div>
 
+
             <Toggle
               enabled={notifications}
               onChange={() =>
@@ -211,11 +288,14 @@ function SettingsPage() {
           </div>
 
 
+          {/* VOICE CONTROL */}
+
           <div className="settings-row">
 
             <div className="settings-row-icon purple">
               <Mic size={19} />
             </div>
+
 
             <div className="settings-row-content">
 
@@ -229,6 +309,7 @@ function SettingsPage() {
 
             </div>
 
+
             <Toggle
               enabled={voiceEnabled}
               onChange={() =>
@@ -239,11 +320,14 @@ function SettingsPage() {
           </div>
 
 
+          {/* AI ASSISTANT */}
+
           <div className="settings-row">
 
             <div className="settings-row-icon violet">
               <Sparkles size={19} />
             </div>
+
 
             <div className="settings-row-content">
 
@@ -256,6 +340,7 @@ function SettingsPage() {
               </span>
 
             </div>
+
 
             <Toggle
               enabled={aiEnabled}
@@ -271,15 +356,24 @@ function SettingsPage() {
       </section>
 
 
-      {/* DEVICE */}
+      {/* =================================================
+          DEVICE
+      ================================================= */}
 
       <section className="settings-section">
 
         <div className="settings-section-heading">
 
           <div>
-            <span>DEVICE</span>
-            <h2>Controller</h2>
+
+            <span>
+              DEVICE
+            </span>
+
+            <h2>
+              Controller
+            </h2>
+
           </div>
 
           <Cpu size={20} />
@@ -289,11 +383,15 @@ function SettingsPage() {
 
         <div className="settings-list">
 
+
+          {/* ESP32 */}
+
           <div className="settings-row clickable">
 
             <div className="settings-row-icon green">
               <Cpu size={19} />
             </div>
+
 
             <div className="settings-row-content">
 
@@ -307,16 +405,20 @@ function SettingsPage() {
 
             </div>
 
+
             <ChevronRight size={18} />
 
           </div>
 
+
+          {/* NETWORK */}
 
           <div className="settings-row clickable">
 
             <div className="settings-row-icon blue">
               <Wifi size={19} />
             </div>
+
 
             <div className="settings-row-content">
 
@@ -330,16 +432,20 @@ function SettingsPage() {
 
             </div>
 
+
             <ChevronRight size={18} />
 
           </div>
 
+
+          {/* MOBILE APP */}
 
           <div className="settings-row clickable">
 
             <div className="settings-row-icon purple">
               <Smartphone size={19} />
             </div>
+
 
             <div className="settings-row-content">
 
@@ -353,6 +459,7 @@ function SettingsPage() {
 
             </div>
 
+
             <ChevronRight size={18} />
 
           </div>
@@ -362,15 +469,24 @@ function SettingsPage() {
       </section>
 
 
-      {/* SYSTEM */}
+      {/* =================================================
+          SYSTEM
+      ================================================= */}
 
       <section className="settings-section">
 
         <div className="settings-section-heading">
 
           <div>
-            <span>SYSTEM</span>
-            <h2>Application</h2>
+
+            <span>
+              SYSTEM
+            </span>
+
+            <h2>
+              Application
+            </h2>
+
           </div>
 
           <RefreshCw size={20} />
@@ -380,11 +496,15 @@ function SettingsPage() {
 
         <div className="settings-list">
 
+
+          {/* CHECK CONNECTION */}
+
           <div className="settings-row clickable">
 
             <div className="settings-row-icon blue">
               <RefreshCw size={19} />
             </div>
+
 
             <div className="settings-row-content">
 
@@ -398,16 +518,20 @@ function SettingsPage() {
 
             </div>
 
+
             <ChevronRight size={18} />
 
           </div>
 
+
+          {/* SYSTEM STATUS */}
 
           <div className="settings-row clickable">
 
             <div className="settings-row-icon green">
               <CheckCircle2 size={19} />
             </div>
+
 
             <div className="settings-row-content">
 
@@ -421,6 +545,7 @@ function SettingsPage() {
 
             </div>
 
+
             <ChevronRight size={18} />
 
           </div>
@@ -430,13 +555,16 @@ function SettingsPage() {
       </section>
 
 
-      {/* APP INFO */}
+      {/* =================================================
+          APP INFO
+      ================================================= */}
 
       <div className="settings-footer">
 
         <div className="settings-footer-logo">
           <Settings size={19} />
         </div>
+
 
         <div>
 
@@ -452,8 +580,12 @@ function SettingsPage() {
 
       </div>
 
+
     </div>
+
   );
+
 }
+
 
 export default SettingsPage;

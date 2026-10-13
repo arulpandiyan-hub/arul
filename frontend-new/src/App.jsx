@@ -5,7 +5,6 @@ import {
   Routes,
   Route,
   NavLink,
-  Navigate,
 } from "react-router-dom";
 
 import {
@@ -13,7 +12,6 @@ import {
   X,
   Home,
   Lightbulb,
-  Zap,
   Mic,
   Sparkles,
   Bell,
@@ -25,7 +23,6 @@ import {
 
 import Dashboard from "./pages/Dashboard";
 import Devices from "./pages/Devices";
-import QuickActions from "./pages/QuickActions";
 import Voice from "./pages/Voice";
 import AI from "./pages/AI";
 import Notifications from "./pages/Notifications";
@@ -34,25 +31,40 @@ import SettingsPage from "./pages/SettingsPage";
 
 import "./App.css";
 
-
 function App() {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const [darkMode, setDarkMode] = useState(true);
+  // Load saved theme
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "light") {
+      return false;
+    }
+
+    return true;
+  });
 
 
-  /*
-  =====================================================
-  NAVIGATION MENU
-  =====================================================
-  */
+  // Change theme
+  const changeTheme = (value) => {
+
+    setDarkMode(value);
+
+    localStorage.setItem(
+      "theme",
+      value ? "dark" : "light"
+    );
+
+  };
+
 
   const menuItems = [
 
     {
       path: "/",
-      name: "Dashboard",
+      name: "Home",
       icon: Home,
     },
 
@@ -63,12 +75,6 @@ function App() {
     },
 
     {
-      path: "/quick-actions",
-      name: "Quick Actions",
-      icon: Zap,
-    },
-
-    {
       path: "/voice",
       name: "Voice Control",
       icon: Mic,
@@ -76,7 +82,7 @@ function App() {
 
     {
       path: "/ai",
-      name: "AI Assistant",
+      name: "Ask AI",
       icon: Sparkles,
     },
 
@@ -101,31 +107,13 @@ function App() {
   ];
 
 
-  /*
-  =====================================================
-  CLOSE MENU
-  =====================================================
-  */
-
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
-
-
-  /*
-  =====================================================
-  TOGGLE THEME
-  =====================================================
-  */
-
-  const toggleTheme = () => {
-    setDarkMode((current) => !current);
-  };
-
-
   return (
 
     <BrowserRouter>
+
+      {/* IMPORTANT:
+          dark/light class is now on the entire app
+      */}
 
       <div
         className={
@@ -140,52 +128,31 @@ function App() {
             TOP HEADER
         ================================================= */}
 
-        <header className="header">
-
-
-          {/* HAMBURGER BUTTON */}
+        <header className="app-header">
 
           <button
-            className="menu-button"
-            onClick={() =>
-              setMenuOpen((current) => !current)
-            }
-            aria-label={
-              menuOpen
-                ? "Close navigation menu"
-                : "Open navigation menu"
-            }
-            aria-expanded={menuOpen}
+            className="header-menu-button"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
           >
-
-            {menuOpen ? (
-              <X size={23} />
-            ) : (
-              <Menu size={23} />
-            )}
-
+            <Menu size={23} />
           </button>
 
 
-          {/* BRAND */}
+          <NavLink
+            to="/"
+            className="app-brand"
+          >
 
-          <div className="brand">
-
-            <div className="brand-icon">
-
-              <Home
-                size={22}
-                strokeWidth={2}
-              />
-
+            <div className="brand-logo">
+              <Home size={20} />
             </div>
 
+            <div className="brand-text">
 
-            <div>
-
-              <h2>
+              <strong>
                 SmartHome
-              </h2>
+              </strong>
 
               <span>
                 AI Home Assistant
@@ -193,19 +160,17 @@ function App() {
 
             </div>
 
-          </div>
+          </NavLink>
 
 
-          {/* THEME BUTTON */}
+          {/* HEADER THEME BUTTON */}
 
           <button
-            className="theme-button"
-            onClick={toggleTheme}
-            aria-label={
-              darkMode
-                ? "Switch to light mode"
-                : "Switch to dark mode"
+            className="header-theme-button"
+            onClick={() =>
+              changeTheme(!darkMode)
             }
+            aria-label="Change theme"
           >
 
             {darkMode ? (
@@ -220,28 +185,60 @@ function App() {
 
 
         {/* =================================================
-            SIDE NAVIGATION
+            SIDE MENU
         ================================================= */}
 
         <aside
           className={
             menuOpen
-              ? "side-menu open"
-              : "side-menu"
+              ? "app-side-menu open"
+              : "app-side-menu"
           }
         >
 
+          <div className="side-menu-header">
 
-          {/* MENU TITLE */}
+            <div className="side-brand">
 
-          <div className="menu-title">
+              <div className="brand-logo">
+                <Home size={20} />
+              </div>
+
+              <div className="brand-text">
+
+                <strong>
+                  SmartHome
+                </strong>
+
+                <span>
+                  AI Home Assistant
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <button
+              className="close-menu-button"
+              onClick={() =>
+                setMenuOpen(false)
+              }
+            >
+
+              <X size={21} />
+
+            </button>
+
+          </div>
+
+
+          <div className="side-menu-label">
             SMART HOME
           </div>
 
 
-          {/* NAVIGATION */}
-
-          <nav>
+          <nav className="side-navigation">
 
             {menuItems.map((item) => {
 
@@ -253,18 +250,17 @@ function App() {
                   key={item.path}
                   to={item.path}
                   end={item.path === "/"}
-                  onClick={closeMenu}
+                  onClick={() =>
+                    setMenuOpen(false)
+                  }
                   className={({ isActive }) =>
                     isActive
-                      ? "menu-link active"
-                      : "menu-link"
+                      ? "side-nav-link active"
+                      : "side-nav-link"
                   }
                 >
 
-                  <Icon
-                    size={20}
-                    strokeWidth={1.8}
-                  />
+                  <Icon size={20} />
 
                   <span>
                     {item.name}
@@ -279,11 +275,9 @@ function App() {
           </nav>
 
 
-          {/* CONNECTION STATUS */}
+          <div className="side-menu-status">
 
-          <div className="menu-footer">
-
-            <div className="connection-dot"></div>
+            <span className="online-dot"></span>
 
             <div>
 
@@ -303,101 +297,65 @@ function App() {
 
 
         {/* =================================================
-            MENU OVERLAY
+            OVERLAY
         ================================================= */}
 
         {menuOpen && (
 
           <div
-            className="menu-overlay"
-            onClick={closeMenu}
-            aria-hidden="true"
+            className="app-overlay"
+            onClick={() =>
+              setMenuOpen(false)
+            }
           />
 
         )}
 
 
         {/* =================================================
-            PAGE CONTENT
+            MAIN CONTENT
         ================================================= */}
 
-        <main className="page-container">
+        <main className="app-content">
 
           <Routes>
-
-
-            {/* DASHBOARD */}
 
             <Route
               path="/"
               element={<Dashboard />}
             />
 
-
-            {/* DEVICES */}
-
             <Route
               path="/devices"
               element={<Devices />}
             />
-
-
-            {/* QUICK ACTIONS */}
-
-            <Route
-              path="/quick-actions"
-              element={<QuickActions />}
-            />
-
-
-            {/* VOICE */}
 
             <Route
               path="/voice"
               element={<Voice />}
             />
 
-
-            {/* AI */}
-
             <Route
               path="/ai"
               element={<AI />}
             />
-
-
-            {/* NOTIFICATIONS */}
 
             <Route
               path="/notifications"
               element={<Notifications />}
             />
 
-
-            {/* SECURITY */}
-
             <Route
               path="/security"
               element={<Security />}
             />
 
-
-            {/* SETTINGS */}
-
             <Route
               path="/settings"
-              element={<SettingsPage />}
-            />
-
-
-            {/* UNKNOWN URL */}
-
-            <Route
-              path="*"
               element={
-                <Navigate
-                  to="/"
-                  replace
+                <SettingsPage
+                  darkMode={darkMode}
+                  setDarkMode={changeTheme}
                 />
               }
             />
@@ -406,12 +364,91 @@ function App() {
 
         </main>
 
+
+        {/* =================================================
+            MOBILE BOTTOM NAVIGATION
+        ================================================= */}
+
+        <nav className="bottom-navigation">
+
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              isActive
+                ? "bottom-nav-item active"
+                : "bottom-nav-item"
+            }
+          >
+
+            <Home size={21} />
+
+            <span>
+              Home
+            </span>
+
+          </NavLink>
+
+
+          <NavLink
+            to="/devices"
+            className={({ isActive }) =>
+              isActive
+                ? "bottom-nav-item active"
+                : "bottom-nav-item"
+            }
+          >
+
+            <Lightbulb size={21} />
+
+            <span>
+              Devices
+            </span>
+
+          </NavLink>
+
+
+          <NavLink
+            to="/ai"
+            className={({ isActive }) =>
+              isActive
+                ? "bottom-nav-item ai-nav active"
+                : "bottom-nav-item ai-nav"
+            }
+          >
+
+            <Sparkles size={21} />
+
+            <span>
+              AI
+            </span>
+
+          </NavLink>
+
+
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              isActive
+                ? "bottom-nav-item active"
+                : "bottom-nav-item"
+            }
+          >
+
+            <Settings size={21} />
+
+            <span>
+              More
+            </span>
+
+          </NavLink>
+
+        </nav>
+
       </div>
 
     </BrowserRouter>
-
   );
 }
-
 
 export default App;

@@ -1,0 +1,635 @@
+/* =========================================================
+   SECURITY PAGE
+========================================================= */
+
+.security-page {
+  width: 100%;
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 42px 48px 80px;
+  box-sizing: border-box;
+  color: #f8fafc;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.security-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.security-header h1 {
+  margin: 0;
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.security-header p {
+  margin: 12px 0 0;
+  color: #94a3b8;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.security-header-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 11px 15px;
+
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 10px;
+
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.08);
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+.security-header-status span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.8);
+}
+
+
+/* =========================================================
+   MAIN SECURITY CARD
+========================================================= */
+
+.security-main {
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  gap: 25px;
+
+  min-height: 210px;
+  padding: 35px;
+
+  border: 1px solid #293b5d;
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #121d32 0%,
+      #10192b 55%,
+      #0d1627 100%
+    );
+
+  box-sizing: border-box;
+}
+
+.security-main.armed {
+  border-color: rgba(96, 165, 250, 0.45);
+}
+
+
+/* =========================================================
+   SECURITY GLOW
+========================================================= */
+
+.security-glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+
+  right: -90px;
+  top: -100px;
+
+  border-radius: 50%;
+
+  background: rgba(59, 130, 246, 0.12);
+
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   SHIELD
+========================================================= */
+
+.security-shield {
+  position: relative;
+  z-index: 1;
+
+  width: 105px;
+  height: 105px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 28px;
+
+  color: #60a5fa;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(59, 130, 246, 0.18),
+      rgba(99, 102, 241, 0.08)
+    );
+
+  box-shadow:
+    0 0 40px rgba(59, 130, 246, 0.12);
+}
+
+.security-main.armed .security-shield {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.security-main-content {
+  position: relative;
+  z-index: 1;
+
+  flex: 1;
+}
+
+.security-small-label {
+  display: block;
+  margin-bottom: 8px;
+
+  color: #64748b;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.security-main-content h2 {
+  margin: 0;
+
+  color: #f8fafc;
+
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.security-main-content p {
+  margin: 8px 0 0;
+
+  color: #94a3b8;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   SECURITY TOGGLE
+========================================================= */
+
+.security-toggle {
+  position: relative;
+  z-index: 2;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  min-width: 165px;
+
+  padding: 13px 18px;
+
+  border: 1px solid #33476a;
+  border-radius: 11px;
+
+  color: #dbeafe;
+  background: #17243b;
+
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.security-toggle:hover {
+  background: #1e304e;
+  border-color: #4b6b9e;
+  transform: translateY(-1px);
+}
+
+.security-toggle.active {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.35);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+
+/* =========================================================
+   STATUS GRID
+========================================================= */
+
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   STATUS CARD
+========================================================= */
+
+.security-status-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 20px;
+
+  border: 1px solid #243450;
+  border-radius: 17px;
+
+  background: #111a2d;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.security-status-card:hover {
+  border-color: #385072;
+  transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   STATUS ICON
+========================================================= */
+
+.security-status-icon {
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+}
+
+.security-status-icon.green {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.security-status-icon.blue {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.security-status-icon.purple {
+  color: #a78bfa;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+
+/* =========================================================
+   STATUS CONTENT
+========================================================= */
+
+.security-status-content {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.security-status-content > span {
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.security-status-content > strong {
+  color: #f8fafc;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.security-status-content small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-top: 2px;
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+}
+
+.security-status-content small i {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+}
+
+.security-status-content small.green {
+  color: #4ade80;
+}
+
+.security-status-content small.green i {
+  background: #4ade80;
+}
+
+.security-status-content small.blue {
+  color: #60a5fa;
+}
+
+.security-status-content small.blue i {
+  background: #60a5fa;
+}
+
+.security-status-content small.purple {
+  color: #a78bfa;
+}
+
+.security-status-content small.purple i {
+  background: #a78bfa;
+}
+
+
+/* =========================================================
+   SECURITY ACTIVITY
+========================================================= */
+
+.security-activity {
+  margin-top: 32px;
+}
+
+.security-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 17px;
+}
+
+.security-section-heading > div span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #64748b;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.security-section-heading h2 {
+  margin: 0;
+
+  color: #f8fafc;
+
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.security-section-heading > svg {
+  color: #64748b;
+}
+
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+
+.security-timeline {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid #243450;
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  background: #0f1728;
+}
+
+.security-event {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid #202d45;
+}
+
+.security-event:last-child {
+  border-bottom: none;
+}
+
+.event-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+}
+
+.event-icon.green {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.event-icon.blue {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.event-icon.purple {
+  color: #a78bfa;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.security-event > div:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.security-event strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #e2e8f0;
+
+  font-size: 14px;
+}
+
+.security-event span {
+  color: #64748b;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.security-event time {
+  color: #64748b;
+
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   SECURITY NOTICE
+========================================================= */
+
+.security-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+
+  margin-top: 22px;
+  padding: 18px 20px;
+
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 15px;
+
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.security-notice > svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.security-notice strong {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #fcd34d;
+
+  font-size: 14px;
+}
+
+.security-notice p {
+  margin: 0;
+
+  color: #927c51;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .security-page {
+    padding: 32px 28px 60px;
+  }
+
+  .security-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .security-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .security-main {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px;
+  }
+
+  .security-toggle {
+    width: 100%;
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+  .security-page {
+    padding: 25px 16px 50px;
+  }
+
+  .security-header h1 {
+    font-size: 34px;
+  }
+
+  .security-main {
+    padding: 22px;
+  }
+
+  .security-shield {
+    width: 80px;
+    height: 80px;
+  }
+
+  .security-main-content h2 {
+    font-size: 23px;
+  }
+
+  .security-event {
+    align-items: flex-start;
+  }
+
+  .security-event time {
+    display: none;
+  }
+
+}

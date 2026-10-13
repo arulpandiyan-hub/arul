@@ -12,7 +12,7 @@ import {
   Smartphone,
   Cpu,
 } from "lucide-react";
-
+import "./Security.css";
 function Security() {
   const [armed, setArmed] = useState(false);
 
